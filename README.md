@@ -30,5 +30,10 @@
 + If PiDens detects more than defined threshold of OPN number, or different encryption with same SSID info ;
 + Logs the activity with some extra information within defined template.
 
+#### Soon to be added features 
+
++ Blacklist SSID analysis
++ Company name setting for illegal wireless attack activities (Monitoring)
+
 #### Example
 + Video: https://www.youtube.com/watch?v=hsMz6zM-yks
