@@ -25,6 +25,13 @@
 
 #### Purpose
 
+It can monitor **illegal wireless network activities.**
+
++ Similar SSID broadcasts
++ Same SSID broadcasts
++ Calculates unencrypted wireless networks density
++ Watches SSID broadcasts at the blacklist.
+
 #### Capabilities
 
 + Calculates Unencrypted wireless network density
