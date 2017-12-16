@@ -31,7 +31,7 @@ Monitor  **illegal wireless network activities.**
 + Calculates unencrypted wireless networks density
 + Watches SSID broadcasts at the blacklist.
 
-#### Capabilities
+#### Capabilities (Now)
 
 + Calculates Unencrypted wireless network density
 + Finds same ssid, different encryption
