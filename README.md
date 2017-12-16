@@ -25,7 +25,7 @@
 
 #### Purpose
 
-It can monitor **illegal wireless network activities.**
+Monitor  **illegal wireless network activities.**
 
 + Similar SSID broadcasts
 + Same SSID broadcasts
