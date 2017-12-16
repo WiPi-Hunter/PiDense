@@ -23,6 +23,13 @@
 <a href="http://www.blackhat.com/eu-17/arsenal/schedule/#wipi-hunter---wifi-pineapple-activities-detection-9091"><img src="https://rawgit.com/toolswatch/badges/master/arsenal/2017.svg"></a>
 </p>
 
+#### Purpose
+
+#### Capabilities
+
++ Calculates Unencrypted wireless network density
++ Finds same ssid, different encryption
+
 #### Working Principle for PiDense
 
 + Collects all the packets from Wireless Networks.
