@@ -27,6 +27,9 @@
 Monitor  **illegal wireless network activities.**
 
 + Similar SSID broadcasts
++ Detects SSID brute
++ Detects beacon flood
++ Monitor deauthentication attack
 + Same SSID broadcasts
 + Calculates unencrypted wireless networks density
 + Watches SSID broadcasts at the blacklist.
@@ -47,6 +50,8 @@ Monitor  **illegal wireless network activities.**
 
 + Blacklist SSID analysis
 + Company name setting for illegal wireless attack activities (Monitoring)
++ Probe request analysis for SSID brute
++ Beacon analysis for SSID flood
 
 #### Example
 + Video: https://www.youtube.com/watch?v=hsMz6zM-yks
