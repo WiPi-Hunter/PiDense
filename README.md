@@ -38,6 +38,7 @@ Monitor  **illegal wireless network activities.**
 
 + Calculates Unencrypted wireless network density
 + Finds same ssid, different encryption
++ Watches SSID broadcasts at the blacklist.
 
 #### Working Principle for PiDense
 
