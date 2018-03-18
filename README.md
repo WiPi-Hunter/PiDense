@@ -49,7 +49,7 @@ Monitor  **illegal wireless network activities.**
 
 #### Soon to be added features 
 
-+ Blacklist SSID analysis
++ Blacklist SSID analysis (Added for BHASIA)
 + Company name setting for illegal wireless attack activities (Monitoring)
 + Probe request analysis for SSID brute
 + Beacon analysis for SSID flood
