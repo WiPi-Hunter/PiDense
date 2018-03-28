@@ -39,6 +39,8 @@ Monitor  **illegal wireless network activities.**
 + Calculates Unencrypted wireless network density
 + Finds same ssid, different encryption
 + Watches SSID broadcasts at the blacklist.
++ KARMA Attacks
++ WiFi Pineapple Activities
 
 #### Working Principle for PiDense
 
@@ -72,10 +74,6 @@ Monitor  **illegal wireless network activities.**
 Download PiDense:
 
 `git clone https://github.com/WiPi-Hunter/PiDense.git`
-
-Install Python librarie(s):
-
-`pip install termcolor`
 
 It's done!
 
