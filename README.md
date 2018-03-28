@@ -33,6 +33,8 @@ Monitor  **illegal wireless network activities.**
 + Same SSID broadcasts
 + Calculates unencrypted wireless networks density
 + Watches SSID broadcasts at the blacklist.
++ KARMA Attacks
++ WiFi Pineapple Activities
 
 #### Capabilities (Now)
 
