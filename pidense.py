@@ -2,7 +2,6 @@
 
 from scapy.all import *
 from scapy.layers.dot11 import Dot11Beacon
-from termcolor import colored
 import argparse
 import time
 
@@ -43,6 +42,8 @@ def air_scan(pkt):
     """
     if pkt.haslayer(Dot11Beacon):
        ssid, bssid = pkt.info, pkt.addr2
+       if ssid not in ssidlist:
+           ssidlist.append(ssid)
        capability = pkt.sprintf("{Dot11Beacon:%Dot11Beacon.cap%}\
 						  {Dot11ProbeResp:%Dot11ProbeResp.cap%}") 
        enc = "Y"
@@ -57,7 +58,19 @@ def air_scan(pkt):
           if info not in info_list_2:
              info_list_2.append(info)
 
-def pidens(info_list_2, pineapple):
+    elif pkt.haslayer(Dot11ProbeResp):
+        ssid, bssid = pkt.info, pkt.addr2
+        info = "{}=*={}".format(bssid, ssid)
+        if info not in info_list:
+            karmalist.append(info)
+
+    elif pkt.haslayer(Dot11Deauth):
+        pass
+        #if pkt.reason == 7:
+         #   deauth_list.append(pkt.reason)
+
+
+def same_ssid(info_list_2, same_ssids):
     for i in range(0, len(info_list_2)):
        for j in range(i+1, len(info_list_2)):
           ssid1 = info_list_2[i].split("=*=")[1]
@@ -65,15 +78,33 @@ def pidens(info_list_2, pineapple):
           enc1= info_list_2[i].split("=*=")[0]
 	  enc2= info_list_2[j].split("=*=")[0]
 	  if ssid1 == ssid2 and enc1 != enc2 and (ssid1 or ssid2) != '':
-	     threat = "[*] Find same SSID, encrypted and unecryped network: " + ssid1
-	     print colored(threat, 'blue', attrs=['reverse', 'blink'])
-	     log = "[*]", time.strftime("%c")," Find same SSID: ", ssid1
-             logging(log)
-             pineapple += 1
-    return pineapple
+             same_ssids += 1
+             print u"\n\u001b[41;1mCritical\u001b[0m\t\033[1mFakeAP\t\t\u001b[41;1msame ssid, different encryption\u001b[0m\t" + "\033[1mSSID: ", ssid1
+    return same_ssids
 
+def karma_attack_check(karmalist, karma):
+    for i in karmalist:
+        bssid, ssid= i.split("=*=")
+        if bssid not in karma.keys():
+            karma[bssid] = []
+            karma[bssid].append(ssid)
+        elif bssid in karma.keys() and ssid not in karma[bssid]:
+            karma[bssid].append(ssid)
+    for v in karma.keys():
+        if len(karma[v]) >= 2 and v not in karma_mac_address:
+            print u"\n\u001b[41;1mCritical\u001b[0m\t\033[1mFakeAP\t\t\u001b[41;1mKARMA Attacks\u001b[0m\t\t\t" + "\033[1mMAC: ", v
+            karma_mac_address.append(v)
+
+def blackssid_check(ssidlist):
+    blackssids = open("blacklist.txt","r").readlines()
+    blackssids = [black[:-1].lower() for black in blackssids]
+    for black in blackssids:
+        for ssid in ssidlist:
+            if black in ssid.lower():
+                print u"\n\u001b[41;1mCritical\u001b[0m\t\033[1mCritical SSID\t\u001b[41;1mBlacklist\u001b[0m\t\t" + "\033[1mSSID: ", ssid
 
 if __name__ == '__main__':
+    density = 5
     iface = args.interface
     mode  = "Monitor"
     os.system("reset")
@@ -82,26 +113,29 @@ if __name__ == '__main__':
     print "Information about test:"
     print "---------"*7
     print "[*]",now
-    print """[*] Analysis unencrypted network number and makes control \n--- between unencrypted and encrypted wireless networks"""
+    print """[*] Monitor illegal wireless network activities. (Fake Access Points)"""
     print "---------"*7
+    print u"\u001b[40;1m T \u001b[41;1m H \u001b[42;1m R \u001b[43;1m E \u001b[45;1m A \u001b[46;1m T \u001b[41;1m S \u001b[0m____________________________________________________\n"
+    print u"\u001b[4m\u001b[240;1mSeverity\tAttack Type\tDescription\t\t\tContent\u001b[0m"
     while True:
-       time.sleep(15)
-       pineapple = 0
+       threat_time = time.strftime("%c")
+       time.sleep(300)
+       karmalist = []
+       karma_mac_address = []
+       karma = {}
+       same_ssids = 0
        info_list = []
-       info_list_2= []
+       info_list_2 = []
+       ssidlist = []
+       deauth_list = []
        sniff_channel_hop(iface)
-       p = pidens(info_list_2, pineapple)
-       opn = "[*] Total unecrypted networks: " + str(len(info_list))
-       opn = colored(opn, 'green', attrs=['reverse', 'blink'])
-       opn += colored("--THREAT !!!", 'red', attrs=['reverse', 'blink'])
-       if len(info_list) >=10:
-          print opn
-	  print "-----------"*5
-          if p >= 2:
-	     print colored("[*] More than defined threshold SSID info", 'green', attrs=['reverse', 'blink'])
-	     print colored("[*] May be THREAT !", 'red', attrs=['reverse', 'blink'])
-	     print colored("[*] Logging was done.", 'green', attrs=['reverse', 'blink'])
-	     log = "[*]", time.strftime("%c"), " More than defined threshold SSID info"
-             logging(log)
-             print "-------------"*5
-
+       p = same_ssid(info_list_2, same_ssids)
+       blackssid_check(ssidlist)
+       karma_attack_check(karmalist, karma)
+       if p >= 3:
+           print u"\n\u001b[41;1mCritical\u001b[0m\t\033[1mPineapple\t\u001b[41;1mUnencrypted WiFi\u001b[0m\t\t" + "\033[1mCount: ", p
+       elif len(info_list) >= density:
+           print u"\n\u001b[43;1mMEDIUM\t\u001b[0m\t\033[1mDensity\t\t\u001b[43;1mOPN Networks\u001b[0m\t\t\t" + "\033[1mCount: ", len(info_list)
+       #elif len(deauth_list) >=0:
+       #    print u"\n\u001b[44;1mInformation\u001b[0m\t\033[1mDeauth Packets\t\u001b[44;1mDeauthentication Attacks\u001b[0m\t" + "\033[1mCount: ", len(deauth_list)
+       print "______________________________________________________________________________: ", threat_time
