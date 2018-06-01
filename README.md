@@ -43,6 +43,7 @@ Monitor  **illegal wireless network activities.**
 + Watches SSID broadcasts at the blacklist.
 + KARMA Attacks
 + WiFi Pineapple Activities
++ Blacklist SSID analysis
 
 #### Working Principle for PiDense
 
@@ -53,7 +54,7 @@ Monitor  **illegal wireless network activities.**
 
 #### Soon to be added features 
 
-+ Blacklist SSID analysis (Added for BHASIA)
++ Pcap parse
 + Company name setting for illegal wireless attack activities (Monitoring)
 + Probe request analysis for SSID brute
 + Beacon analysis for SSID flood
