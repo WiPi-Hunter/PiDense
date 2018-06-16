@@ -99,8 +99,10 @@ def blackssid_check(ssidlist):
     blackssids = open("blacklist.txt","r").readlines()
     blackssids = [black[:-1].lower() for black in blackssids]
     for black in blackssids:
-        for ssid in ssidlist:
-            if black in ssid.lower():
+        for info in info_list_2:
+	    ssid = info.split("=*=")[1]
+	    enc  = info.split("=*=")[0]
+            if black in ssid.lower() and enc == "N":
                 print u"\n\u001b[41;1mCritical\u001b[0m\t\033[1mCritical SSID\t\u001b[41;1mBlacklist\u001b[0m\t\t" + "\033[1mSSID: ", ssid
 
 if __name__ == '__main__':
@@ -130,7 +132,7 @@ if __name__ == '__main__':
        deauth_list = []
        sniff_channel_hop(iface)
        p = same_ssid(info_list_2, same_ssids)
-       blackssid_check(ssidlist)
+       blackssid_check(info_list_2)
        karma_attack_check(karmalist, karma)
        if p >= 3:
            print u"\n\u001b[41;1mCritical\u001b[0m\t\033[1mPineapple\t\u001b[41;1mUnencrypted WiFi\u001b[0m\t\t" + "\033[1mCount: ", p
