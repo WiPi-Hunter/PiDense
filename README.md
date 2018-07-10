@@ -49,10 +49,7 @@ Monitor  **illegal wireless network activities.**
 
 #### Working Principle for PiDense
 
-+ Collects all the packets from Wireless Networks.
-+ Analyzes all the beacon packets. 
-+ If PiDens detects more than defined threshold of OPN number, or different encryption with same SSID info ;
-+ Logs the activity with some extra information within defined template.
+* -
 
 #### Soon to be added features 
 
