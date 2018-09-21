@@ -2,24 +2,20 @@
 
 from scapy.all import *
 from scapy.layers.dot11 import Dot11Beacon
-import argparse
+from termcolor import colored
 import time
 
 banner = """
 
-██████╗ ██╗██████╗ ███████╗███╗   ██╗███████╗███████╗
-██╔══██╗██║██╔══██╗██╔════╝████╗  ██║██╔════╝██╔════╝
-██████╔╝██║██║  ██║█████╗  ██╔██╗ ██║███████╗█████╗
-██╔═══╝ ██║██║  ██║██╔══╝  ██║╚██╗██║╚════██║██╔══╝
-██║     ██║██████╔╝███████╗██║ ╚████║███████║███████╗
-╚═╝     ╚═╝╚═════╝ ╚══════╝╚═╝  ╚═══╝╚══════╝╚══════╝
------------------------------------------------------
+PiDense can detects, 
+
+[*] Pineapple activity
+[*] KARMA Attacks
+[*] Enviroment threats
+[*] Deauth Attacks 
+[*] Other Fake AP Tactics
+-----------------------------------------
 """
-
-parser = argparse.ArgumentParser()
-parser.add_argument('-i', '--interface',required=True, help="Interface (Monitor Mode)", type=str)
-args = parser.parse_args()
-
 
 def logging(log):
     with open("/var/log/pidens.log", "a") as f:
@@ -42,18 +38,18 @@ def air_scan(pkt):
     """
     if pkt.haslayer(Dot11Beacon):
        ssid, bssid = pkt.info, pkt.addr2
-       if ssid not in ssidlist:
+       if ssid not in ssidlist and len(ssid)!=0:
            ssidlist.append(ssid)
        capability = pkt.sprintf("{Dot11Beacon:%Dot11Beacon.cap%}\
 						  {Dot11ProbeResp:%Dot11ProbeResp.cap%}") 
        enc = "Y"
-       if "privacy" not in capability: 
+       if "privacy" not in capability and len(ssid)!=0:
           enc = 'N'
 	  info = "{}=*={}".format(enc, ssid)
           if info not in info_list and info_list_2:
 	     info_list.append(info)
 	     info_list_2.append(info)
-       else:
+       elif "privacy" in capability and len(ssid)!=0:
           info = "{}=*={}".format(enc, ssid)
           if info not in info_list_2:
              info_list_2.append(info)
@@ -61,7 +57,7 @@ def air_scan(pkt):
     elif pkt.haslayer(Dot11ProbeResp):
         ssid, bssid = pkt.info, pkt.addr2
         info = "{}=*={}".format(bssid, ssid)
-        if info not in info_list:
+        if len(ssid)!=0 and info not in info_list:
             karmalist.append(info)
 
     elif pkt.haslayer(Dot11Deauth):
@@ -91,37 +87,30 @@ def karma_attack_check(karmalist, karma):
         elif bssid in karma.keys() and ssid not in karma[bssid]:
             karma[bssid].append(ssid)
     for v in karma.keys():
-        if len(karma[v]) >= 2 and v not in karma_mac_address:
+        if len(karma[v]) >= 3 and v not in karma_mac_address:
             print u"\n\u001b[41;1mCritical\u001b[0m\t\033[1mFakeAP\t\t\u001b[41;1mKARMA Attacks\u001b[0m\t\t\t" + "\033[1mMAC: ", v
             karma_mac_address.append(v)
 
-def blackssid_check(ssidlist):
+def blackssid_check(info_list_2):
     blackssids = open("blacklist.txt","r").readlines()
     blackssids = [black[:-1].lower() for black in blackssids]
     for black in blackssids:
         for info in info_list_2:
-	    ssid = info.split("=*=")[1]
-	    enc  = info.split("=*=")[0]
-            if black in ssid.lower() and enc == "N":
-                print u"\n\u001b[41;1mCritical\u001b[0m\t\033[1mCritical SSID\t\u001b[41;1mBlacklist\u001b[0m\t\t" + "\033[1mSSID: ", ssid
+            ssid = info.split("=*=")[1]
+            enc  = info.split("=*=")[0]
+            if black in ssid and enc == "N":
+                print u"\n\u001b[41;1mCritical\u001b[0m\t\033[1mCritical SSID\t\u001b[41;1mBlacklist\u001b[0m\t\t\t" + "\033[1mSSID: ", ssid
 
 if __name__ == '__main__':
     density = 5
-    iface = args.interface
-    mode  = "Monitor"
-    os.system("reset")
+    iface = "wlan0mon"
     now = time.strftime("%c")
     print banner
-    print "Information about test:"
-    print "---------"*7
-    print "[*]",now
-    print """[*] Monitor illegal wireless network activities. (Fake Access Points)"""
-    print "---------"*7
     print u"\u001b[40;1m T \u001b[41;1m H \u001b[42;1m R \u001b[43;1m E \u001b[45;1m A \u001b[46;1m T \u001b[41;1m S \u001b[0m____________________________________________________\n"
     print u"\u001b[4m\u001b[240;1mSeverity\tAttack Type\tDescription\t\t\tContent\u001b[0m"
     while True:
        threat_time = time.strftime("%c")
-       time.sleep(300)
+       time.sleep(45)
        karmalist = []
        karma_mac_address = []
        karma = {}
@@ -140,4 +129,4 @@ if __name__ == '__main__':
            print u"\n\u001b[43;1mMEDIUM\t\u001b[0m\t\033[1mDensity\t\t\u001b[43;1mOPN Networks\u001b[0m\t\t\t" + "\033[1mCount: ", len(info_list)
        #elif len(deauth_list) >=0:
        #    print u"\n\u001b[44;1mInformation\u001b[0m\t\033[1mDeauth Packets\t\u001b[44;1mDeauthentication Attacks\u001b[0m\t" + "\033[1mCount: ", len(deauth_list)
-       print "______________________________________________________________________________: ", threat_time
+       print "______________________________________________________: ", threat_time
