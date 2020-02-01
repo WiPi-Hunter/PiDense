@@ -11,7 +11,7 @@ PiDense can detects,
 
 [*] Pineapple activity
 [*] KARMA Attacks
-[*] Enviroment threats
+[*] Environment threats
 [*] Deauth Attacks 
 [*] Other Fake AP Tactics
 -----------------------------------------
